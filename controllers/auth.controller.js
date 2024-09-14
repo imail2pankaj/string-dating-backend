@@ -1,8 +1,10 @@
 const httpStatus = require('http-status');
+const jwt = require('jsonwebtoken');
+
 const AppError = require('../utils/ApiError');
 const config = require('../config/cfg');
 const { findUserByEmail, saveUser, comparePassword } = require('../services/user.service');
-const { generateAuthTokens } = require('../services/token.service');
+const { generateAuthTokens, generateAuthRefreshTokens } = require('../services/token.service');
 const ApiError = require('../utils/ApiError');
 
 const login = async (req, res) => {
@@ -18,16 +20,18 @@ const login = async (req, res) => {
 
     await comparePassword(password, user.password);
 
-    const token = await generateAuthTokens(user)
+    const accessToken = await generateAuthTokens(user)
+    const refreshToken = await generateAuthRefreshTokens(user)
 
-    const safeUser = { ...user.get() }; 
+    const safeUser = { ...user.get() };
     delete safeUser.password;
 
-    res.cookie('token', token.token, { httpOnly: true, secure: config.env === 'production' });
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: config.env === 'production' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.env === 'production' });
 
     return res
       .status(httpStatus.OK)
-      .json({ user: safeUser, token, message: "Logged in successfully" });
+      .json({ user: safeUser, accessToken, message: "Logged in successfully" });
 
   } catch (error) {
 
@@ -66,8 +70,28 @@ const signup = async (req, res) => {
 
 }
 
+const refreshToken = async (req, res) => {
+
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
+  jwt.verify(refreshToken, config.jwt.secret, async (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const accessToken = await generateAuthRefreshTokens(user);
+    return res.json({ accessToken });
+  });
+
+}
+
 
 module.exports = {
   login,
   signup,
+  refreshToken,
 }

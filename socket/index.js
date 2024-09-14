@@ -6,7 +6,8 @@ module.exports = function (server) {
 
   const io = new Server(server, {
     cors: {
-      origin: config.appUrl,
+      origin: "*",
+      // origin: config.appUrl,
       credentials: true
     }
   });
@@ -14,11 +15,10 @@ module.exports = function (server) {
   io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id} | ${socket.username}`);
 
-    socket.on('message', ({ message }) => {
-      console.log(message)
-      io.emit('message', message);
+    socket.on('chat message', ({ message, time, user, user_id }) => {
+      io.emit('chat message', { message, time, user, user_id });
     });
-    
+
     // Listen for joining a room
     socket.on('joinRoom', (room) => {
       socket.join(room);

@@ -11,9 +11,16 @@ const findUserByEmail = async (email) => {
   return existingUser;
 }
 
-const findUsers = async () => {
+const findUser = async (where) => {
+  const existingUser = await User.findOne({ where: where });
+
+  return existingUser;
+}
+
+const findUsers = async (where = {}) => {
   const users = await User.findAll({
-    attributes: ['id', 'first_name','last_name','username','email','gender'],
+    attributes: ['id', 'first_name', 'last_name', 'username', 'email', 'gender'],
+    where: where
   });
 
   return users;
@@ -55,4 +62,5 @@ module.exports = {
   findUserByEmail,
   saveUser,
   findUsers,
+  findUser,
 }

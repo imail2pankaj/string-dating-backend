@@ -11,6 +11,7 @@ const generateToken = (user, expires) => {
     iat: moment().unix(),
     exp: expires.unix()
   };
+  
   return jwt.sign(payload, config.jwt.secret);
 };
 
@@ -32,18 +33,26 @@ const verifyToken = async (token) => {
 
 const generateAuthTokens = async (user) => {
 
-  const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
+  const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'days');
+  // const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
 
   const accessToken = generateToken(user, accessTokenExpires);
 
-  return {
-    token: accessToken,
-    expires: accessTokenExpires.toDate(),
-  };
+  return accessToken;
+};
+
+const generateAuthRefreshTokens = async (user) => {
+
+  const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
+
+  const refreshToken = generateToken(user, refreshTokenExpires);
+
+  return refreshToken;
 };
 
 module.exports = {
   verifyToken,
   generateToken,
-  generateAuthTokens
+  generateAuthTokens,
+  generateAuthRefreshTokens
 }

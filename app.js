@@ -20,7 +20,11 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
-app.use(cors());
+app.use(cors({
+  origin: config.appUrl,
+  credentials: true
+}));
+
 app.use(cookieParser());
 
 app.use("/api/v1", routes)
