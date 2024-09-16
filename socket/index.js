@@ -1,4 +1,5 @@
 const { Server } = require("socket.io");
+const { Message } = require("../models");
 const jwt = require("jsonwebtoken");
 const config = require("../config/cfg.js");
 
@@ -15,25 +16,21 @@ module.exports = function (server) {
   io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id} | ${socket.username}`);
 
-    socket.on('chat message', ({ message, time, user, user_id }) => {
-      io.emit('chat message', { message, time, user, user_id });
-    });
-
     // Listen for joining a room
-    socket.on('joinRoom', (room) => {
-      socket.join(room);
-      console.log(`${socket.id} joined room: ${room}`);
-      io.to(room).emit('message', `User ${socket.id} has joined the room ${room}`);
+    socket.on('joinChannel', ({ channel }) => {
+      socket.join(channel);
+      console.log(`${socket.id} joined room: ${channel}`);
+      // io.to(channel).emit('roomMessage', `User ${socket.id} has joined the room ${channel}`);
 
-      socket.on('roomMessage', (message) => {
-        io.to(room).emit('message', `${socket.id}: ${message}`);
+      socket.on('roomMessage', ({ channel, channel_id, message, time, user, user_id }) => {
+        // console.log({ channel, channel_id, message, time, user, user_id })
+        Message.create({ channel_id, user_id, message })
+        io.to(channel).emit('roomMessage', { channel, channel_id, message, time, user, user_id });
       });
-
-
 
       socket.on('disconnect', () => {
         console.log(`Client disconnected: ${socket.id}`);
-        io.to(room).emit('message', `User ${socket.id} has left the room`);
+        io.to(channel).emit('message', `User ${socket.id} has left the room`);
       });
     });
   });

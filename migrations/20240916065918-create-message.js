@@ -15,8 +15,8 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER
       },
-      room: {
-        type: Sequelize.STRING
+      channel_id: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
