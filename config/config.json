@@ -14,9 +14,9 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+    "username": "strings_dating_app",
+    "password": "strings_dating_app",
+    "database": "strings_dating_app",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

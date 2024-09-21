@@ -22,10 +22,10 @@ module.exports = function (server) {
       console.log(`${socket.id} joined room: ${channel}`);
       // io.to(channel).emit('roomMessage', `User ${socket.id} has joined the room ${channel}`);
 
-      socket.on('roomMessage', ({ channel, channel_id, message, time, user, user_id }) => {
+      socket.on('roomMessage', ({ channel, channel_id, message, createdAt, user, user_id }) => {
         // console.log({ channel, channel_id, message, time, user, user_id })
         Message.create({ channel_id, user_id, message })
-        io.to(channel).emit('roomMessage', { channel, channel_id, message, time, user, user_id });
+        io.to(channel).emit('roomMessage', { channel, channel_id, message, createdAt, user, user_id });
       });
 
       socket.on('disconnect', () => {
