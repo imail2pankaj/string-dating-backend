@@ -17,7 +17,7 @@
     "username": "strings_dating_app",
     "password": "strings_dating_app",
     "database": "strings_dating_app",
-    "host": "127.0.0.1",
+    "host": "184.168.114.42",
     "dialect": "mysql"
   }
 }
