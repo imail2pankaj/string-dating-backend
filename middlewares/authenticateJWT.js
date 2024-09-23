@@ -4,13 +4,12 @@ const jwt = require('jsonwebtoken');
 
 // JWT Authentication Middleware
 const authenticateJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  // const authHeader = req.headers.authorization;
 
-  if (authHeader) {
-    // Extract token (assuming it's in the format "Bearer <token>")
-    const token = authHeader.split(' ')[1];
+  const token = req.cookies.accessToken;
 
-    // Verify the token using the secret key
+  if (token) {
+
     jwt.verify(token, config.jwt.secret, (err, user) => {
 
       if (err) {

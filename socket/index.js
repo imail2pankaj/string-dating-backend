@@ -9,7 +9,7 @@ module.exports = function (server) {
     cors: {
       origin: "*",
       // origin: config.appUrl,
-      credentials: true
+      // credentials: true
     }
   });
 
@@ -36,7 +36,9 @@ module.exports = function (server) {
   });
 
   io.use((socket, next) => {
+
     const token = socket.handshake.auth.token;
+
     if (token) {
       jwt.verify(token, config.jwt.secret, (err, decoded) => {
 

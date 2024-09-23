@@ -28,6 +28,7 @@ const login = async (req, res) => {
 
     res.cookie('accessToken', accessToken, { httpOnly: true, secure: config.env === 'production' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.env === 'production' });
+    // res.cookie('user', JSON.stringify(safeUser), { httpOnly: true, secure: config.env === 'production' });
 
     return res
       .status(httpStatus.OK)

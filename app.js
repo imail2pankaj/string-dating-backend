@@ -5,6 +5,7 @@ const httpStatus = require("http-status");
 const passport = require("passport");
 const { createServer } = require("http");
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const ApiError = require("./utils/ApiError.js");
 const { errorConverter, errorHandler } = require("./middlewares/error.js");
@@ -25,11 +26,20 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(session({
+  secret: config.jwt.secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
+
+
 app.use(cookieParser());
 
 app.use("/api/v1", routes)
 
 app.use(passport.initialize());
+app.use(passport.session());
 passport.use('jwt', jwtStrategy);
 
 app.use((req, res, next) => {
