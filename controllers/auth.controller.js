@@ -26,8 +26,14 @@ const login = async (req, res) => {
     const safeUser = { ...user.get() };
     delete safeUser.password;
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: config.env === 'production' });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.env === 'production' });
+    const cookieOption = {
+      httpOnly: true,
+      domain: config.env === 'production' ? '.testthatsite.site' : "localhost",
+      secure: config.env === 'production'
+    }
+
+    res.cookie('accessToken', accessToken, cookieOption);
+    res.cookie('refreshToken', refreshToken, cookieOption);
     // res.cookie('user', JSON.stringify(safeUser), { httpOnly: true, secure: config.env === 'production' });
 
     return res
