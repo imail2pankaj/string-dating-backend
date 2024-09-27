@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const AppError = require('../utils/ApiError');
 const config = require('../config/cfg');
-const { findUserByEmail, saveUser, comparePassword } = require('../services/user.service');
+const { findUserByEmail, saveUser, comparePassword, findUser } = require('../services/user.service');
 const { generateAuthTokens, generateAuthRefreshTokens } = require('../services/token.service');
 const ApiError = require('../utils/ApiError');
 
@@ -52,7 +52,7 @@ const login = async (req, res) => {
 
 const signup = async (req, res) => {
 
-  const { email, password, name, gender } = req.body;
+  const { email, password, name, gender, username } = req.body;
 
   try {
 
@@ -62,7 +62,13 @@ const signup = async (req, res) => {
       throw new AppError(httpStatus.CONFLICT, "Email is already registered.")
     }
 
-    await saveUser({ email, password, name, gender })
+    const existingUsername = await findUser({username});
+
+    if (existingUsername) {
+      throw new AppError(httpStatus.CONFLICT, "Username is already available, please choose another.")
+    }
+
+    await saveUser({ email, password, name, gender, username })
 
     return res
       .status(httpStatus.CREATED)

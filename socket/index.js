@@ -38,7 +38,7 @@ module.exports = function (server) {
   io.use((socket, next) => {
 
     const token = socket.handshake.auth.token;
-// console.log(token,'-------------')
+
     if (token) {
       jwt.verify(token, config.jwt.secret, (err, decoded) => {
 

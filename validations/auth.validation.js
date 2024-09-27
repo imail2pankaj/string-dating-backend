@@ -2,6 +2,7 @@ const Joi = require('joi');
 
 const signupValidation = {
   body: Joi.object().keys({
+    username: Joi.string().required().regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_]+$/, "User name should be combination of alphanumeric and underscores."),
     email: Joi.string().required().email(),
     password: Joi.string().min(6).required(),
     name: Joi.string().required(),

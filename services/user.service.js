@@ -36,7 +36,7 @@ const comparePassword = async (password, hashedPassword) => {
   return isMatched
 }
 
-const saveUser = async ({ email, password, name, gender }) => {
+const saveUser = async ({ email, password, name, gender, username }) => {
   const names = name.split(" ");
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,7 +45,7 @@ const saveUser = async ({ email, password, name, gender }) => {
     return await User.create({
       email,
       gender,
-      username: generateUsername(name),
+      username,
       first_name: names[0],
       last_name: names.length > 0 ? names[1] : "",
       password: hashedPassword,
