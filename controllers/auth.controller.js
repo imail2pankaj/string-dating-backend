@@ -65,7 +65,7 @@ const signup = async (req, res) => {
     const existingUsername = await findUser({username});
 
     if (existingUsername) {
-      throw new AppError(httpStatus.CONFLICT, "Username is already available, please choose another.")
+      throw new AppError(httpStatus.CONFLICT, "Username is not available, please choose another.")
     }
 
     await saveUser({ email, password, name, gender, username })
