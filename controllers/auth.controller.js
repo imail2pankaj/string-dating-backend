@@ -33,6 +33,7 @@ const login = async (req, res) => {
     }
 
     res.cookie('accessToken', accessToken, cookieOption);
+    res.cookie('accessTokens', accessToken);
     res.cookie('refreshToken', refreshToken, cookieOption);
     // res.cookie('user', JSON.stringify(safeUser), { httpOnly: true, secure: config.env === 'production' });
 
