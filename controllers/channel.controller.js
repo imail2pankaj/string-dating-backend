@@ -18,6 +18,7 @@ const getChannels = async (req, res) => {
       include: [
         {
           model: Message,
+          
           include: [
             { model: User, as: "user" }
           ]
@@ -46,11 +47,17 @@ const joinChannel = async (req, res) => {
         include: [
           {
             model: Message,
+            limit: 20,
+            order: [['createdAt', 'DESC']],
             include: [
               { model: User, as: "user" }
             ]
           }]
       });
+
+      if (chnl && chnl.Messages) {
+        chnl.Messages.reverse();
+      }
 
       return res
         .status(httpStatus.OK)

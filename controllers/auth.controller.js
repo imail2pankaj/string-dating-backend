@@ -28,12 +28,12 @@ const login = async (req, res) => {
 
     const cookieOption = {
       httpOnly: true,
-      domain: config.env === 'production' ? '.testthatsite.site' : "192.168.1.7",
-      secure: config.env === 'production'
+      domain: config.env === 'production' ? '.testthatsite.site' : "192.168.1.8",
+      secure: config.env === 'production',
+      sameSite: 'lax'
     }
 
     res.cookie('accessToken', accessToken, cookieOption);
-    res.cookie('accessTokens', accessToken);
     res.cookie('refreshToken', refreshToken, cookieOption);
     // res.cookie('user', JSON.stringify(safeUser), { httpOnly: true, secure: config.env === 'production' });
 
