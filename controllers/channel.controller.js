@@ -47,7 +47,7 @@ const joinChannel = async (req, res) => {
         include: [
           {
             model: Message,
-            limit: 20,
+            // limit: 20,
             order: [['createdAt', 'DESC']],
             include: [
               { model: User, as: "user" }

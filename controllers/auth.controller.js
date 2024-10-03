@@ -28,7 +28,7 @@ const login = async (req, res) => {
 
     const cookieOption = {
       httpOnly: true,
-      domain: config.env === 'production' ? '.testthatsite.site' : "192.168.1.8",
+      domain: config.env === 'production' ? '.testthatsite.site' : "localhost",
       secure: config.env === 'production',
       sameSite: 'lax'
     }
