@@ -9,7 +9,7 @@ const config = require('../config/config.js')
 const generateToken = (user = '') => {
   try {
     // Gets expiration time
-    const expiration = config.jwt.accessExpirationMinutes
+    const expiration = config.jwt.accessExpirationDays
 
     // returns signed and encrypted token
     return jwt.sign(

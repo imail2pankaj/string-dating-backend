@@ -30,7 +30,8 @@ const login = async (req, res) => {
       httpOnly: true,
       domain: config.env === 'production' ? '.testthatsite.site' : "localhost",
       secure: config.env === 'production',
-      sameSite: 'lax'
+      sameSite: 'lax',
+      maxAge: config.jwt.accessExpirationDays * 24 * 60 * 60 * 1000
     }
 
     res.cookie('accessToken', accessToken, cookieOption);
@@ -63,7 +64,7 @@ const signup = async (req, res) => {
       throw new AppError(httpStatus.CONFLICT, "Email is already registered.")
     }
 
-    const existingUsername = await findUser({username});
+    const existingUsername = await findUser({ username });
 
     if (existingUsername) {
       throw new AppError(httpStatus.CONFLICT, "Username is not available, please choose another.")
@@ -104,8 +105,34 @@ const refreshToken = async (req, res) => {
 }
 
 
+const me = async (req, res) => {
+
+  const userId = req.user.id
+
+  try {
+
+    const existingUser = await findUser({ id: userId });
+
+    if (!existingUser) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized access.")
+    }
+
+    return res
+      .status(httpStatus.OK)
+      .json(existingUser)
+
+  } catch (error) {
+
+    return res
+      .status(error.statusCode)
+      .json({ message: error.message });
+  }
+
+}
+
 module.exports = {
   login,
   signup,
   refreshToken,
+  me,
 }
