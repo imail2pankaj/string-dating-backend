@@ -30,7 +30,8 @@ const comparePassword = async (password, hashedPassword) => {
   const isMatched = await bcrypt.compare(password, hashedPassword);
 
   if (!isMatched) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid email or password")
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid credentials")
+    // throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid email or password")
   }
 
   return isMatched
@@ -56,11 +57,26 @@ const saveUser = async ({ email, password, name, gender, username }) => {
   }
 }
 
+const updateUser = async (newValues, userId) => {
+
+  try {
+    return await User.update(newValues, {
+      where: {
+        id: userId
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message)
+  }
+}
+
 
 module.exports = {
   comparePassword,
   findUserByEmail,
   saveUser,
+  updateUser,
   findUsers,
   findUser,
 }
