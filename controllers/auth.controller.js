@@ -36,7 +36,6 @@ const login = async (req, res) => {
 
     res.cookie('accessToken', accessToken, cookieOption);
     res.cookie('refreshToken', refreshToken, cookieOption);
-    // res.cookie('user', JSON.stringify(safeUser), { httpOnly: true, secure: config.env === 'production' });
 
     return res
       .status(httpStatus.OK)
@@ -75,6 +74,57 @@ const signup = async (req, res) => {
     return res
       .status(httpStatus.CREATED)
       .json({ message: "User registered successfully" })
+
+  } catch (error) {
+
+    return res
+      .status(error.statusCode)
+      .json({ message: error.message });
+  }
+
+}
+
+
+const connect = async (req, res) => {
+
+  const { nick_name } = req.body;
+
+  try {
+
+    let user = await findUser({ username: nick_name });
+
+    if (!user) {
+      const userData = {
+        email: `${nick_name}@example.com`,
+        username: nick_name,
+        password: nick_name,
+        name: nick_name,
+        gender: "Female",
+      }
+      user = await saveUser(userData)
+    }
+
+
+    const accessToken = await generateAuthTokens(user)
+    const refreshToken = await generateAuthRefreshTokens(user)
+
+    const safeUser = { ...user.get() };
+    delete safeUser.password;
+
+    const cookieOption = {
+      httpOnly: true,
+      domain: config.env === 'production' ? '.testthatsite.site' : "localhost",
+      secure: config.env === 'production',
+      sameSite: 'lax',
+      maxAge: config.jwt.accessExpirationDays * 24 * 60 * 60 * 1000
+    }
+
+    res.cookie('accessToken', accessToken, cookieOption);
+    res.cookie('refreshToken', refreshToken, cookieOption);
+
+    return res
+      .status(httpStatus.OK)
+      .json({ user: safeUser, accessToken, message: "Logged in successfully" });
 
   } catch (error) {
 
@@ -133,6 +183,7 @@ const me = async (req, res) => {
 module.exports = {
   login,
   signup,
+  connect,
   refreshToken,
   me,
 }

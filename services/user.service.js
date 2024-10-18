@@ -52,7 +52,6 @@ const saveUser = async ({ email, password, name, gender, username }) => {
       password: hashedPassword,
     })
   } catch (error) {
-    console.log(error)
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message)
   }
 }

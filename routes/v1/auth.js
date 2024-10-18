@@ -7,11 +7,13 @@ const {
   signup,
   refreshToken,
   me,
+  connect,
 } = require('../../controllers/auth.controller');
 
 const {
   loginValidation,
-  signupValidation
+  signupValidation,
+  connectValidation
 } = require('../../validations/auth.validation');
 
 const authenticateJWT = require('../../middlewares/authenticateJWT');
@@ -19,6 +21,7 @@ const authenticateJWT = require('../../middlewares/authenticateJWT');
 const router = express.Router()
 
 router.post('/login', validate(loginValidation), login)
+router.post('/connect', validate(connectValidation), connect)
 router.post('/signup', validate(signupValidation), signup)
 router.post('/token', refreshToken)
 router.get('/me', authenticateJWT, me)

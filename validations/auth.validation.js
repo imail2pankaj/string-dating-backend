@@ -17,8 +17,15 @@ const loginValidation = {
   }),
 };
 
+const connectValidation = {
+  body: Joi.object().keys({
+    nick_name: Joi.string().required().regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_]+$/, "Nick name should be combination of alphanumeric and underscores."),
+  }),
+};
+
 
 module.exports = {
   loginValidation,
-  signupValidation
+  signupValidation,
+  connectValidation,
 }
