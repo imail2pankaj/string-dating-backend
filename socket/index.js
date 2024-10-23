@@ -32,9 +32,9 @@ module.exports = function (server) {
       socket.on('roomMessage', ({ channel, channel_id, message, createdAt, user, user_id, isJoined }) => {
 
         if (!isJoined) {
-          Message.create({ channel_id, user_id, message })
+          // Message.create({ channel_id, user_id, message })
         }
-        io.to(channel).emit('roomMessage', { channel, channel_id, message, createdAt, user, user_id, isJoined });
+        io.to('general').emit('roomMessage', { channel, channel_id, message, createdAt, user, user_id, isJoined });
       });
 
       socket.on('disconnect', () => {
@@ -42,7 +42,7 @@ module.exports = function (server) {
         delete onlineUsers[socket.id];
 
         console.log(`Client disconnected: ${socket.id}`);
-        io.to(channel).emit('roomMessage', `User ${socket.id} has left the room`);
+        io.to('general').emit('roomMessage', `User ${socket.id} has left the room`);
       });
     });
   });
